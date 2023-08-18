@@ -21,17 +21,17 @@ inline bool set_log_path (const char *file_path) {
     return true;
 }   
 
-static char *gettime() {
-    time_t now = time(NULL);
-    struct tm* local_time = localtime(&now);
-    char time_str[80];
-    int len = strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", local_time);
-    if (len == 0) {
-        printf("Error formatting time\n");
-        return time_str;
-    }
-    return time_str;
-}
+// static char *gettime() {
+    // time_t now = time(NULL);
+    // struct tm* local_time = localtime(&now);
+    // char time_str[80];
+    // int len = strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", local_time);
+    // if (len == 0) {
+    //     printf("Error formatting time\n");
+    //     return time_str;
+    // }
+    // return time_str;
+// }
 
 #define LOG_INFO(fmt, ...) \
     do { \

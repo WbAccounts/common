@@ -7,11 +7,8 @@
 #include <assert.h>
 #include <sys/types.h>
 #include "ASDataType.h"
-// #include "ASBundle.h"
+#include "ASBundle.h"
 #include "qh_thread/locker.hpp"
-#include "common/AsFramework/ASErrCode.h"
-#include "common/AsFramework/ASMacros.h"
-#include <string.h>
 
 class CASBundleImpl
 {
@@ -43,35 +40,35 @@ public:
 		m_valTable.clear();
 	}
 
-	// void clone(IASBundleBase* pBundleCloneTo)
-	// {
-	// 	int nKeyLstLen = 0;
-	// 	unsigned char* lpKeyValues = _GetBundleKeyList(nKeyLstLen);
-	// 	if (!lpKeyValues || nKeyLstLen <= 0)
-	// 		return;
+	void clone(IASBundleBase* pBundleCloneTo)
+	{
+		int nKeyLstLen = 0;
+		unsigned char* lpKeyValues = _GetBundleKeyList(nKeyLstLen);
+		if (!lpKeyValues || nKeyLstLen <= 0)
+			return;
 
-	// 	char* lpszKey = (char*)lpKeyValues;
-	// 	while (nKeyLstLen > 0)
-	// 	{
-	// 		std::string strKey = lpszKey;
-	// 		nKeyLstLen -= (strKey.length() + 1);
+		char* lpszKey = (char*)lpKeyValues;
+		while (nKeyLstLen > 0)
+		{
+			std::string strKey = lpszKey;
+			nKeyLstLen -= (strKey.length() + 1);
 
-	// 		long lType = 0xFFFFFFFF;
-	// 		this->getValueType(strKey.c_str(), &lType);
-	// 		if (ASDataType::AS_VALTYPE_INT == lType)
-	// 			_CloneInt(strKey.c_str(), pBundleCloneTo);
-	// 		else if (ASDataType::AS_VALTYPE_ASTRING == lType)
-	// 			_CloneAString(strKey.c_str(), pBundleCloneTo);
-	// 		else if (ASDataType::AS_VALTYPE_WSTRING == lType)
-	// 			_CloneWString(strKey.c_str(), pBundleCloneTo);
-	// 		else if (ASDataType::AS_VALTYPE_BINARY == lType)
-	// 			_CloneBinary(strKey.c_str(), pBundleCloneTo);
+			long lType = 0xFFFFFFFF;
+			this->getValueType(strKey.c_str(), &lType);
+			if (ASDataType::AS_VALTYPE_INT == lType)
+				_CloneInt(strKey.c_str(), pBundleCloneTo);
+			else if (ASDataType::AS_VALTYPE_ASTRING == lType)
+				_CloneAString(strKey.c_str(), pBundleCloneTo);
+			else if (ASDataType::AS_VALTYPE_WSTRING == lType)
+				_CloneWString(strKey.c_str(), pBundleCloneTo);
+			else if (ASDataType::AS_VALTYPE_BINARY == lType)
+				_CloneBinary(strKey.c_str(), pBundleCloneTo);
 
-	// 		lpszKey += strKey.length() + 1;
-	// 	}
+			lpszKey += strKey.length() + 1;
+		}
 
-	// 	if (lpKeyValues) delete[] lpKeyValues;
-	// }
+		if (lpKeyValues) delete[] lpKeyValues;
+	}
 
 	ASCode putInt(const char* lpKey, int nValue)
 	{
@@ -420,60 +417,60 @@ public:
 
 protected:
 
-	// void _CloneInt(const char* lpszKey, IASBundleBase* pBundleCloneTo)
-	// {
-	// 	int nValue;
-	// 	if (ASErr_OK == getInt(lpszKey, &nValue))
-	// 		pBundleCloneTo->putInt(lpszKey, nValue);
-	// }
+	void _CloneInt(const char* lpszKey, IASBundleBase* pBundleCloneTo)
+	{
+		int nValue;
+		if (ASErr_OK == getInt(lpszKey, &nValue))
+			pBundleCloneTo->putInt(lpszKey, nValue);
+	}
 
-	// void _CloneAString(const char* lpszKey, IASBundleBase* pBundleCloneTo)
-	// {
-	// 	int nLen = 0;
-	// 	if (ASErr_INSUFFICIENT_BUFFER == this->getAString(lpszKey, NULL, &nLen) && nLen > 0)
-	// 	{
-	// 		char* lpBuf = (char*)(new char[nLen]);
-	// 		if (!lpBuf)	return;
+	void _CloneAString(const char* lpszKey, IASBundleBase* pBundleCloneTo)
+	{
+		int nLen = 0;
+		if (ASErr_INSUFFICIENT_BUFFER == this->getAString(lpszKey, NULL, &nLen) && nLen > 0)
+		{
+			char* lpBuf = (char*)(new char[nLen]);
+			if (!lpBuf)	return;
 
-	// 		if (ASErr_OK == this->getAString(lpszKey, lpBuf, &nLen))
-	// 		{
-	// 			pBundleCloneTo->putAString(lpszKey, lpBuf);
-	// 		}
-	// 		delete[] lpBuf;
-	// 	}
-	// }
+			if (ASErr_OK == this->getAString(lpszKey, lpBuf, &nLen))
+			{
+				pBundleCloneTo->putAString(lpszKey, lpBuf);
+			}
+			delete[] lpBuf;
+		}
+	}
 
-	// void _CloneWString(const char* lpszKey, IASBundleBase* pBundleCloneTo)
-	// {
-	// 	int nLen = 0;
-	// 	if (ASErr_INSUFFICIENT_BUFFER == this->getWString(lpszKey, NULL, &nLen) && nLen > 0)
-	// 	{
-	// 		wchar_t* lpBuf = (wchar_t*)(new char[nLen]);
-	// 		if (!lpBuf)	return;
+	void _CloneWString(const char* lpszKey, IASBundleBase* pBundleCloneTo)
+	{
+		int nLen = 0;
+		if (ASErr_INSUFFICIENT_BUFFER == this->getWString(lpszKey, NULL, &nLen) && nLen > 0)
+		{
+			wchar_t* lpBuf = (wchar_t*)(new char[nLen]);
+			if (!lpBuf)	return;
 
-	// 		if (ASErr_OK == this->getWString(lpszKey, lpBuf, &nLen))
-	// 		{
-	// 			pBundleCloneTo->putWString(lpszKey, lpBuf);
-	// 		}
-	// 		delete[] lpBuf;
-	// 	}
-	// }
+			if (ASErr_OK == this->getWString(lpszKey, lpBuf, &nLen))
+			{
+				pBundleCloneTo->putWString(lpszKey, lpBuf);
+			}
+			delete[] lpBuf;
+		}
+	}
 
-	// void _CloneBinary(const char* lpszKey, IASBundleBase* pBundleCloneTo)
-	// {
-	// 	int nLen = 0;
-	// 	if (ASErr_INSUFFICIENT_BUFFER == this->getBinary(lpszKey, NULL, &nLen) && nLen > 0)
-	// 	{
-	// 		unsigned char*  lpBuf = (unsigned char*)(new char[nLen]);
-	// 		if (!lpBuf)	return;
+	void _CloneBinary(const char* lpszKey, IASBundleBase* pBundleCloneTo)
+	{
+		int nLen = 0;
+		if (ASErr_INSUFFICIENT_BUFFER == this->getBinary(lpszKey, NULL, &nLen) && nLen > 0)
+		{
+			unsigned char*  lpBuf = (unsigned char*)(new char[nLen]);
+			if (!lpBuf)	return;
 
-	// 		if (ASErr_OK == this->getBinary(lpszKey, lpBuf, &nLen))
-	// 		{
-	// 			pBundleCloneTo->putBinary(lpszKey, lpBuf, nLen);
-	// 		}
-	// 		delete[] lpBuf;
-	// 	}
-	// }
+			if (ASErr_OK == this->getBinary(lpszKey, lpBuf, &nLen))
+			{
+				pBundleCloneTo->putBinary(lpszKey, lpBuf, nLen);
+			}
+			delete[] lpBuf;
+		}
+	}
 
 	inline unsigned char* _GetBundleKeyList(int& nDataLen)
 	{
@@ -576,13 +573,8 @@ public:
 
 #define ASBUNDLE_EASY_IMPLEMENT(theClass)\
 public:\
-private:\
-	CASBundleImpl m_AttrBundle_##theClass;
-
-#define ASBUNDLE_EASY_IMPLEMENT(theClass)\
-public:\
 	virtual void clear() { m_AttrBundle_##theClass.clear(); }\
-	/* virtual void clone(IASBundleBase* pBundleCloneTo) { m_AttrBundle_##theClass.clone(pBundleCloneTo); }\ */ \
+	virtual void clone(IASBundleBase* pBundleCloneTo) { m_AttrBundle_##theClass.clone(pBundleCloneTo); }\
 	virtual ASCode putInt(const char* lpKey, int nValue) { return m_AttrBundle_##theClass.putInt(lpKey, nValue); }\
 	virtual ASCode putAString(const char* lpKey, const char* lpValue) { return m_AttrBundle_##theClass.putAString(lpKey, lpValue); }\
 	virtual ASCode putWString(const char* lpKey, const wchar_t* lpValue) { return m_AttrBundle_##theClass.putWString(lpKey, lpValue); }\
@@ -601,7 +593,7 @@ public:\
 	virtual ASCode putInt64(const char* lpKey, int64_t nValue) { return m_AttrBundle_##theClass.putInt64(lpKey, nValue); }\
 	virtual ASCode getInt64(const char* lpKey, int64_t* pResult) { return m_AttrBundle_##theClass.getInt64(lpKey, pResult); }
 
-class CASBundle /*: public IASBundle*/
+class CASBundle : public IASBundle
 {
 private:
 	CASBundle():m_lRefCount(0){}
@@ -614,9 +606,9 @@ public:
 	virtual long	AddRef() { return __sync_add_and_fetch(&m_lRefCount, 1); }
 	virtual long	Release() { long l = __sync_sub_and_fetch(&m_lRefCount, 1); if (0 == l) delete this; return l; }
 
-	static CASBundle* CreateInstance()
+	static IASBundle* CreateInstance()
 	{
-		CASBundle* pBundle = new (std::nothrow) CASBundle;
+		IASBundle* pBundle = new (std::nothrow) CASBundle;
 		if(pBundle)pBundle->AddRef();
 		return pBundle;
 	}
@@ -627,9 +619,9 @@ private:
 ASBUNDLE_EASY_IMPLEMENT_EXT(CASBundle)
 
 public:
-	static CASBundle* CreateInstanceExt()
+	static IASBundle* CreateInstanceExt()
 	{
-		CASBundle* pBundle = new (std::nothrow) CASBundle;
+		IASBundle* pBundle = new (std::nothrow) CASBundle;
 		return pBundle;
 	}
 };
