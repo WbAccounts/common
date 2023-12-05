@@ -1,8 +1,9 @@
 // #pragma once
+// #ifndef ERROR_UTILS_H_
+// #define ERROR_UTILS_H_
 // #include <map>
 // #include <string.h>
 // #include "common/qh_thread/thread.h"
-// #include "common/singleton.hpp"
 
 // class CError {
 // public:
@@ -43,12 +44,29 @@
 //         return "no_output";
 //     }
 
+// public:
+//     static CError* get_instance() {
+//         if(m_instance == NULL) {
+//             QH_THREAD::CMutexAutoLocker Lck(&m_mutex);
+//             if (m_instance == NULL) {
+//                 m_instance = new CError();
+//             }
+//         }
+//         return m_instance;
+//     }
+
+// public:
+//     static QH_THREAD::CMutex m_mutex;
+//     static CError *m_instance;
+
 // private:
-//     QH_THREAD::CMutex m_mutex;
 //     std::map<pthread_t, int> tid_error;
 //     std::map<pthread_t, std::string> tid_out;
 // };
-// #define _ERROR_ Singleton<CError>::Instance()
+// #define _ERROR_ CError::get_instance()
+
+// QH_THREAD::CMutex CError::m_mutex;
+// CError *CError::m_instance = NULL;
 
 // #define ERROR_EASY_IMPLEMENT()\
 // public:\
@@ -66,3 +84,4 @@
 //     virtual std::string get_error_out() { return m_error_##class.get_error_out(); }\
 // private:\
 //     CError m_error_##class;
+// #endif
