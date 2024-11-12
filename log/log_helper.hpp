@@ -5,20 +5,20 @@
 
 using loglevel = spdlog::level::level_enum;
 
-// #define SPDLOG_LEVEL_TRACE 0
-// #define SPDLOG_LEVEL_DEBUG 1
-// #define SPDLOG_LEVEL_INFO 2
-// #define SPDLOG_LEVEL_WARN 3
-// #define SPDLOG_LEVEL_ERROR 4
-// #define SPDLOG_LEVEL_CRITICAL 5
-// #define SPDLOG_LEVEL_OFF 6
+// #define SPDLOG_LEVEL_TRACE       0
+// #define SPDLOG_LEVEL_DEBUG       1
+// #define SPDLOG_LEVEL_INFO        2
+// #define SPDLOG_LEVEL_WARN        3
+// #define SPDLOG_LEVEL_ERROR       4
+// #define SPDLOG_LEVEL_CRITICAL    5
+// #define SPDLOG_LEVEL_OFF         6
 
-std::shared_ptr<spdlog::logger> m_logger;
-std::string logger_name;
+static std::shared_ptr<spdlog::logger> m_logger;
+static std::string logger_name;
 
 namespace log_helper {
 namespace json_helper {
-    bool parse_file(const std::string &json_file, std::string& logger_name, std::string& log_file_path, int &level, size_t &max_size, size_t &max_files) 
+    static bool parse_file(const std::string &json_file, std::string& logger_name, std::string& log_file_path, int &level, size_t &max_size, size_t &max_files) 
     {
         std::ifstream f(json_file);
         if (!f) {
@@ -33,13 +33,13 @@ namespace json_helper {
         return true;
     }
 };
-    bool init_logger(const std::string& logger_name, const std::string& log_file_path, loglevel level = loglevel::info, size_t max_size = 1048576 * 5, size_t max_files = 3) {
+    static bool init_logger(const std::string& logger_name, const std::string& log_file_path, loglevel level = loglevel::info, size_t max_size = 1048576 * 5, size_t max_files = 3) {
         m_logger = spdlog::rotating_logger_mt(logger_name, log_file_path, max_size, max_files);
         m_logger->set_level(level);
         return true;
     }
 
-    bool init_logger(const std::string &conf_file_path) {
+    static bool init_logger(const std::string &conf_file_path) {
         std::string logger_name;
         std::string log_file_path;
         int level = 0;

@@ -32,7 +32,7 @@ namespace string_utils {
 
 #define DEC_CONVERT string_utils::dec_convert
 
-namespace system_utils {
+namespace string_utils {
     namespace dec_convert
     {
         int bin_2_int(const std::string& s) {
