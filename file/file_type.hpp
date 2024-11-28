@@ -5,12 +5,12 @@
 #include <string>
 #include <fstream>
 
-namespace file_utils {
+namespace f_type {
     FileType get_file_type(const std::string &path);
     bool get_file_type(const std::string &s_path, std::string& type, std::string& mime);
 };
 
-namespace file_utils {
+namespace f_type {
     FileType get_file_type(const std::string &path) {
         FileType type = f_unknown;
         do {
