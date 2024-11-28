@@ -2,6 +2,7 @@
 #define M_COMMON_THREAD_LOCKER_HPP
 
 #include "locker_base.hpp"
+#include <stdio.h>
 
 #define auto_locker   locker
 #define manual_locker locker
@@ -11,9 +12,11 @@ class CAutoMutexLocker {
 public:
     CAutoMutexLocker(locker_base::CMutexLock *locker) : m_mutex(locker), nError(0) { 
         nError = pthread_mutex_lock(m_mutex->getMutex()); 
+        printf("lock %d\n", nError);
     }
     ~CAutoMutexLocker() { 
         nError = pthread_mutex_unlock(m_mutex->getMutex()); 
+        printf("unlock %d\n", nError);
     }
 public:
     int getError() { return nError; }
