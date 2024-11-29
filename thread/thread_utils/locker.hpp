@@ -12,11 +12,9 @@ class CAutoMutexLocker {
 public:
     CAutoMutexLocker(locker_base::CMutexLock *locker) : m_mutex(locker), nError(0) { 
         nError = pthread_mutex_lock(m_mutex->getMutex()); 
-        printf("lock %d\n", nError);
     }
     ~CAutoMutexLocker() { 
         nError = pthread_mutex_unlock(m_mutex->getMutex()); 
-        printf("unlock %d\n", nError);
     }
 public:
     int getError() { return nError; }

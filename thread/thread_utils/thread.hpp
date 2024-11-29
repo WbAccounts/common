@@ -6,6 +6,7 @@
 #include <tr1/functional>
 #include <signal.h>
 #include <errno.h>
+#include <unistd.h>
 
 namespace thread {
 typedef std::tr1::function<void(void*)> ThreadFunc;
@@ -16,6 +17,7 @@ public:
     }
     virtual ~CThread() {
         if (isRunning()) {
+            usleep(1000 * 0.1);
             quit();
             join();
         }
@@ -23,14 +25,14 @@ public:
     }
 
 public:
-    bool run();
-    bool join();
-    bool tryJoin();
-    bool detach();
-    bool wait(int sec = 0, int nsec = 0);
+    void run();
+    void join();
+    void tryJoin();
+    void detach();
+    void wait(int sec = 0, int nsec = 0);
 
     void pause();
-    bool quit();
+    void quit();
 
     bool isPause();
     bool isQuit();
@@ -38,8 +40,8 @@ public:
     bool isRunning();
     bool isRealQuit();
 
-    bool broad();
-    bool signal();
+    void broad();
+    void signal();
 
     bool set_thread_name(const char* thread_name);
     pthread_t getThreadId() { return m_thread; }
@@ -62,32 +64,34 @@ private:
     bool m_isQuit;
 };
 
-bool CThread::run() {
+void CThread::run() {
     locker::CAutoMutexLocker locker(&m_mutex);
-    return (pthread_create(&m_thread, NULL, &CThread::thread_func, this) == 0);
+    pthread_create(&m_thread, NULL, &CThread::thread_func, this);
 }
 
-bool CThread::join() {
+void CThread::join() {
     locker::CAutoMutexLocker locker(&m_mutex);
-    return (pthread_join(m_thread, NULL) == 0);
+    pthread_join(m_thread, NULL);
 }
 
-bool CThread::tryJoin() {
+void CThread::tryJoin() {
     locker::CAutoMutexLocker locker(&m_mutex);
-    return (pthread_tryjoin_np(m_thread, NULL) == 0);
+    pthread_tryjoin_np(m_thread, NULL);
 }
 
-bool CThread::detach() {
+void CThread::detach() {
     locker::CAutoMutexLocker locker(&m_mutex);
-    return (pthread_detach(m_thread) == 0);
+    pthread_detach(m_thread);
 }
 
-bool CThread::wait(int sec, int nsec) {
-    locker::CAutoMutexLocker locker(&m_mutex);
-    if (sec == 0) {
-        return (m_cond->Wait() == 0);
+void CThread::wait(int sec, int nsec) {
+    locker::CManualMutexLocker locker(&m_mutex);
+    locker.lock();
+    switch (sec) {
+        case  0: m_cond->Wait(); break;
+        default: m_cond->Wait(sec, nsec); break;
     }
-    return (m_cond->Wait(sec, nsec) == 0);
+    locker.unlock();
 }
 
 void CThread::pause() {
@@ -95,24 +99,20 @@ void CThread::pause() {
     m_isPause = true;
 }
 
-bool CThread::quit() {
+void CThread::quit() {
     locker::CAutoMutexLocker locker(&m_mutex);
     m_isQuit = true;
-    return (m_cond->BroadCast() == 0);
+    m_cond->BroadCast();
 }
 
 bool CThread::isRunning() {
     locker::CAutoMutexLocker locker(&m_mutex);
-    if (m_thread)
-        return (pthread_kill(m_thread, 0) == 0);
-    return false;
+    return pthread_kill(m_thread, 0) == 0;
 }
 
 bool CThread::isRealQuit() {
     locker::CAutoMutexLocker locker(&m_mutex);
-    if (m_thread)
-        return (pthread_kill(m_thread, 0) == ESRCH);
-    return true;
+    return pthread_kill(m_thread, 0) == ESRCH;
 }
 
 bool CThread::isPause() {
@@ -125,16 +125,16 @@ bool CThread::isQuit() {
     return m_isQuit;
 }
 
-bool CThread::broad() {
+void CThread::broad() {
     locker::CAutoMutexLocker locker(&m_mutex);
     m_isPause = false;
-    return (m_cond->BroadCast() == 0);
+    m_cond->BroadCast();
 }
 
-bool CThread::signal() {
+void CThread::signal() {
     locker::CAutoMutexLocker locker(&m_mutex);
     m_isPause = false;
-    return (m_cond->Signal() == 0);
+    m_cond->Signal();
 }
 
 bool CThread::set_thread_name(const char* thread_name) {

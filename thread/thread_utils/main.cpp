@@ -22,8 +22,6 @@ int main() {
     thread.run();
     sleep(10);
     i=0;
-    printf("__WU__\n");
     thread.signal();
-    printf("__WU__\n");
     return 0;
 }
