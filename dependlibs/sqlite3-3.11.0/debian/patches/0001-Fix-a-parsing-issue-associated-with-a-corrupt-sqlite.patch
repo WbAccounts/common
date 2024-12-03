@@ -1,0 +1,27 @@
+From: Joe Mistachkin <sqlite@mistachkin.com>
+Date: Fri, 16 Mar 2018 19:10:05 +0000
+Subject: [PATCH] Fix a parsing issue associated with a corrupt sqlite_master
+ table.
+
+---
+ src/parse.y | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+--- sqlite3-3.11.0.orig/src/parse.y
++++ sqlite3-3.11.0/src/parse.y
+@@ -180,8 +180,13 @@ create_table_args ::= LP columnlist cons
+   sqlite3EndTable(pParse,&X,&E,F,0);
+ }
+ create_table_args ::= AS select(S). {
+-  sqlite3EndTable(pParse,0,0,0,S);
+-  sqlite3SelectDelete(pParse->db, S);
++  if( pParse->db->init.busy==0 ){
++    sqlite3EndTable(pParse,0,0,0,S);
++    sqlite3SelectDelete(pParse->db, S);
++  }else{
++    sqlite3SelectDelete(pParse->db, S);
++    sqlite3ErrorMsg(pParse, "corrupt schema");
++  }
+ }
+ %type table_options {int}
+ table_options(A) ::= .    {A = 0;}
