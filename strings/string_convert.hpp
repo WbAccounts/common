@@ -1,6 +1,5 @@
+#include <cmath>
 #include <string>
-#include <sstream>
-#include <math.h>
 
 namespace string_utils {
     namespace dec_convert
@@ -29,8 +28,6 @@ namespace string_utils {
         std::string hex_2_dec(const std::string &s);
     }; // namespace dec_convert
 }; // namespace string_utils
-
-#define DEC_CONVERT string_utils::dec_convert
 
 namespace string_utils {
     namespace dec_convert
@@ -140,5 +137,4 @@ namespace string_utils {
             return to_dec_string(hex_2_int(s));
         }
     }; // namespace dec_convert
-    
 };
