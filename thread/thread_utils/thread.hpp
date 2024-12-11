@@ -12,6 +12,9 @@ namespace thread {
 typedef std::tr1::function<void(void*)> ThreadFunc;
 class CThread {
 public:
+    CThread() : m_thread(0), m_isPause(false), m_isQuit(false) {
+        m_cond = new conder::CConder(&m_mutex);
+    }
     CThread(ThreadFunc func, void *arg = NULL) : m_thread(0), m_func(func), m_arg(arg), m_isPause(false), m_isQuit(false) {
         m_cond = new conder::CConder(&m_mutex);
     }
@@ -44,6 +47,10 @@ public:
     void signal();
 
     bool set_thread_name(const char* thread_name);
+    void set_thread_func(ThreadFunc func, void *arg=NULL) { 
+        m_func = func; 
+        m_arg = arg;
+    }
     pthread_t getThreadId() { return m_thread; }
 
 private:
@@ -107,7 +114,9 @@ void CThread::quit() {
 
 bool CThread::isRunning() {
     locker::CAutoMutexLocker locker(&m_mutex);
-    return pthread_kill(m_thread, 0) == 0;
+    if (m_thread)
+        return pthread_kill(m_thread, 0) == 0;
+    return false;
 }
 
 bool CThread::isRealQuit() {
