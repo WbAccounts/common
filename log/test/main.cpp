@@ -3,9 +3,7 @@
 // #include "module2.hpp"
 
 // int main() {
-//     LOG_HELPER()->init_logger("test", "test.log");
-//     // LOG_HELPER()->init_logger_cmd("test");
-//     printf("%d\n", __LINE__);
+//     LOG_HELPER->init_logger_cmd("test");
 //     CModule1 module1;
 //     CModule2 module2;
 //     for (int i=0; i<10; i++) {
@@ -35,7 +33,7 @@
 #include "log_helper.h"
 
 int main () {
-    LOG_HELPER()->init_logger("test", "test.log", loglevel::debug);
+    LOG_HELPER->init_logger("test", "test.log", loglevel::debug);
 
     LOG_INFO("this is info");
     LOG_DEBUG("this is debug");

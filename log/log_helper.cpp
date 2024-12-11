@@ -28,7 +28,7 @@ bool CLogHelper::init_logger_cmd(const std::string& logger_name, loglevel level)
     m_logger_name = logger_name;
     spdlog::set_default_logger(m_logger);
     spdlog::flush_every(std::chrono::seconds(1));
-    spdlog::set_pattern("[%Y:%m:%d %X:%e %#] [line: %# ] [thread:%t] [%^%l%$] %v");
+    spdlog::set_pattern("[%Y:%m:%d %X:%e] [thread:%t] [line:%#] [%^%l%$] %v");
     return true;
 }
 
@@ -38,7 +38,7 @@ bool CLogHelper::init_logger(const std::string& logger_name, const std::string& 
     m_logger_name = logger_name;
     spdlog::set_default_logger(m_logger);
     spdlog::flush_every(std::chrono::seconds(1));
-    spdlog::set_pattern("[%Y:%m:%d %X:%e] [line:%#] [thread:%t] [%^%l%$] %v");
+    spdlog::set_pattern("[%Y:%m:%d %X:%e] [thread:%t] [line:%#] [%^%l%$] %v");
     return true;
 }
 

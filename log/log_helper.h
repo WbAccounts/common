@@ -36,7 +36,7 @@ private:
     std::string m_logger_name;
     std::shared_ptr<spdlog::logger> m_logger;
 };
-#define LOG_HELPER() CLogHelper::getInstance()
+#define LOG_HELPER CLogHelper::getInstance()
 #define LOG_INFO(msg, ...)  SPDLOG_INFO(msg, ##__VA_ARGS__);
 #define LOG_DEBUG(msg, ...) SPDLOG_DEBUG(msg, ##__VA_ARGS__);
 #define LOG_WARN(msg, ...)  SPDLOG_WARN(msg, ##__VA_ARGS__);
