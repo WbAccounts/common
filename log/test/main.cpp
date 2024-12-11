@@ -15,19 +15,32 @@
 //     return 0;
 // }
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
+// #include "spdlog/spdlog.h"
+// #include "spdlog/sinks/stdout_color_sinks.h"
+
+// int main () {
+//     auto console = spdlog::stdout_color_mt("console");
+//     console->set_level(spdlog::level::level_enum::debug);
+//     spdlog::flush_every(std::chrono::seconds(1));
+//     spdlog::set_pattern("[%Y:%m:%d %X:%e %#] [line: %# ] [thread:%t] [%^%l%$] %v");
+
+//     console->info("this is info");
+//     console->debug("this is debug");
+//     console->warn("this is warn");
+//     console->error("this is error");
+//     console->critical("this is critical");
+//     return 0;
+// }
+
+#include "log_helper.h"
 
 int main () {
-    auto console = spdlog::stdout_color_mt("console");
-    console->set_level(spdlog::level::level_enum::debug);
-    spdlog::flush_every(std::chrono::seconds(1));
-    spdlog::set_pattern("[%Y:%m:%d %X:%e %#] [line: %# ] [thread:%t] [%^%l%$] %v");
+    LOG_HELPER()->init_logger("test", "test.log", loglevel::debug);
 
-    console->info("this is info");
-    console->debug("this is debug");
-    console->warn("this is warn");
-    console->error("this is error");
-    console->critical("this is critical");
+    LOG_INFO("this is info");
+    LOG_DEBUG("this is debug");
+    LOG_WARN("this is warn");
+    LOG_ERROR("this is error");
+    LOG_CRITICAL("this is critical");
     return 0;
 }

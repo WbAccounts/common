@@ -22,10 +22,11 @@ bool CLogHelper::parse_file(const std::string &json_file, std::string& logger_na
     return true;
 }
 
-bool CLogHelper::init_logger_cmd(const std::string& logger_name) {
+bool CLogHelper::init_logger_cmd(const std::string& logger_name, loglevel level) {
     m_logger = spdlog::stdout_color_mt(logger_name);
-    m_logger->set_level(loglevel::debug);
+    m_logger->set_level(level);
     m_logger_name = logger_name;
+    spdlog::set_default_logger(m_logger);
     spdlog::flush_every(std::chrono::seconds(1));
     spdlog::set_pattern("[%Y:%m:%d %X:%e %#] [line: %# ] [thread:%t] [%^%l%$] %v");
     return true;
@@ -35,6 +36,7 @@ bool CLogHelper::init_logger(const std::string& logger_name, const std::string& 
     m_logger = spdlog::rotating_logger_mt(logger_name, log_file_path, max_size, max_files);
     m_logger->set_level(level);
     m_logger_name = logger_name;
+    spdlog::set_default_logger(m_logger);
     spdlog::flush_every(std::chrono::seconds(1));
     spdlog::set_pattern("[%Y:%m:%d %X:%e] [line:%#] [thread:%t] [%^%l%$] %v");
     return true;
