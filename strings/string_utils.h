@@ -2,7 +2,8 @@
 #define STRING_UTILS_H
 
 #include "string_trim.hpp"
-#include "string_convert.hpp"
+#include "string_transform.hpp"
+#include "string_number.hpp"
 namespace string_utils {
 
 }; // namespace string_utils
